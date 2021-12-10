@@ -1,0 +1,14 @@
+{
+  "depenses": [
+    {
+      "id": 1,
+      "nom": "depense",
+      "montant": 20
+    },
+    {
+      "id": 2,
+      "nom": "recette",
+      "montant": -10
+    }
+  ]
+}

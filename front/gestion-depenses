@@ -1,0 +1,50 @@
+window.addEventListener("DOMContentLoaded"  , async() => {
+
+    const reponse = await fetch("http://localhost:3000/depenses" )
+    const depenses = await reponse.json(); 
+    
+    document.querySelector(".js-list").innerHTML = genererFormsTaches(depenses);
+
+    document.querySelector(".js-compteur-total").innerHTML = depenses.filter( total => total.montant += total.montant); 
+    document.querySelector(".js-compteur-depenses").innerHTML = depenses.filter( depense => depense.montant > 0 += depense.montant); 
+    document.querySelector(".js-compteur-recettes").innerHTML = depenses.filter( recette => recette.montant < 0 += recette.montant); 
+
+
+    document.querySelector(".js-list").addEventListener("click" , async e => {
+        e.preventDefault();
+        if(e.target.className.includes("btn")){
+            const form = e.target.parentNode;
+            const action = e.target.value ;
+            const id = form.id.value;
+
+            if(action == "modifier"){
+                const data = {
+                    id : id,
+                    nom : form.nom.value,
+                    montant : form.montant.value
+                }
+                const options = { method : "PUT" , body : JSON.stringify(data) , headers : {'Content-Type': 'application/json'} }
+                await fetch("http://localhost:3000/depenses/"+id , options);
+            }
+            else if(action == "supprimer"){
+                const options = {method : "DELETE"}
+                await fetch("http://localhost:3000/depenses/"+id , options);
+            }
+        }
+    })
+})
+
+function genererFormsTaches(data){
+
+    if(data.length === 0) return "<p>Veuillez ajouter des dépenses/recettes</p>";
+
+    return data.map( d => {
+        return `<form class="d-flex my-3">
+                    <input type="hidden" name="id" class="form-input" value="${d.id}">
+                    <input type="text" name="nom" class="form-input" value="${d.nom}">
+                    <input type="number" name="montant" class="form-input" value="${d.montant}">
+                    <input type="submit" class="btn btn-primary mx-3" value="modifier">
+                    <input type="submit" class="btn btn-danger" value="supprimer">
+                </form>`
+    } ).join("")
+}
